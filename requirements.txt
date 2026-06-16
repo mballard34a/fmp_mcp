@@ -1,0 +1,6 @@
+# BCNA FMP MCP Server — dependencies
+# Python 3.10+ required.
+
+mcp>=1.27.0          # MCP Python SDK (includes FastMCP + streamable-http)
+httpx>=0.27          # HTTP client for FMP calls
+uvicorn>=0.27        # ASGI server, used only for the hosted/remote transport
