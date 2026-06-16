@@ -47,10 +47,18 @@ API_KEY = os.environ.get("FMP_API_KEY", "").strip()
 # to protect the model's context window. Bulk pulls should use fmp_bulk instead.
 MAX_TEXT_CHARS = 100_000
 
+# Optional shared-secret lock for the hosted transport. When FMP_MCP_TOKEN is
+# set, the streamable-HTTP handler mounts at /mcp/<token> instead of /mcp, so
+# any request without the secret path gets a 404. Leave it unset for local
+# (stdio) use, where there is no network exposure to protect.
+_token = os.environ.get("FMP_MCP_TOKEN", "").strip()
+_http_path = f"/mcp/{_token}" if _token else "/mcp"
+
 mcp = FastMCP(
     "fmp",
     host=os.environ.get("FMP_MCP_HOST", "0.0.0.0"),
     port=int(os.environ.get("FMP_MCP_PORT", "8787")),
+    streamable_http_path=_http_path,
 )
 
 _client = httpx.Client(timeout=90.0, follow_redirects=True)
