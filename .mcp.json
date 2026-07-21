@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "bcna-fmp": {
+      "type": "http",
+      "url": "https://bcna-fmp-mcp.onrender.com/mcp",
+      "bearer_token_env_var": "FMP_MCP_ACCESS_TOKEN",
+      "tool_timeout_sec": 90
+    }
+  }
+}

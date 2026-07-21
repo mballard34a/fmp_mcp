@@ -1,0 +1,28 @@
+{
+  "name": "bcna-fmp-data",
+  "version": "0.1.0",
+  "description": "Private Financial Modeling Prep data tools for BCNA investment research.",
+  "author": {
+    "name": "Mark Ballard",
+    "url": "https://github.com/mballard34a"
+  },
+  "homepage": "https://github.com/mballard34a/fmp_mcp",
+  "repository": "https://github.com/mballard34a/fmp_mcp",
+  "keywords": ["investing", "financial-data", "fmp", "equities"],
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "BCNA FMP Data",
+    "shortDescription": "Private FMP Ultimate investment data",
+    "longDescription": "Retrieves company, valuation, analyst, market, ownership, screening, and bulk datasets from Financial Modeling Prep for private BCNA research workflows.",
+    "developerName": "Mark Ballard",
+    "category": "Finance",
+    "capabilities": ["Read"],
+    "websiteURL": "https://github.com/mballard34a/fmp_mcp",
+    "defaultPrompt": [
+      "Pull FMP valuation data for this ticker.",
+      "Compare FMP metrics for these companies.",
+      "Screen FMP for companies matching my criteria."
+    ],
+    "brandColor": "#17365D"
+  }
+}

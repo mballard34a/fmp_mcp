@@ -20,8 +20,11 @@ Pick whichever surface you actually use. Steps for both are below.
 |------|---------|
 | `fmp_mcp_server.py` | The server. 15 tools. |
 | `requirements.txt` | Python dependencies. |
-| `.env.example` | Where the API key goes. Copy to `.env`. |
+| `.env.example` | Local environment-variable template. |
 | `asgi.py` | ASGI entry point, hosted/remote deploys only. |
+| `render.yaml` | Reproducible private Render deployment. |
+| `.codex-plugin/plugin.json` | ChatGPT/Codex plugin manifest. |
+| `.mcp.json` | Remote MCP connection configuration. |
 | `README.md` | This file. |
 
 ### Tools
@@ -43,9 +46,9 @@ Pick whichever surface you actually use. Steps for both are below.
 ## Security — read this first
 
 The server reads your key from the **`FMP_API_KEY`** environment variable. It is
-never written into the code and never sent back to Claude. Keep it out of source
-control: `.env` should be git-ignored, and on a host you set it as a **secret**,
-not a plain config value.
+never written into the code and never sent back to the model. Hosted requests
+also require **`FMP_MCP_ACCESS_TOKEN`** as an HTTP bearer token. Keep both out of
+source control and store both as Render secrets.
 
 ---
 
@@ -95,7 +98,8 @@ Fly.io, a small VPS). General shape:
    ```bash
    uvicorn asgi:app --host 0.0.0.0 --port $PORT
    ```
-3. In the host's dashboard, add an environment **secret** `FMP_API_KEY`.
+3. In the host's dashboard, add environment secrets `FMP_API_KEY` and
+   `FMP_MCP_ACCESS_TOKEN`. Use two different values.
 4. The host gives you an HTTPS URL. Your MCP endpoint is that URL plus the
    streamable-http path, typically:
    ```
