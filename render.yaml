@@ -14,3 +14,15 @@ services:
         sync: false
       - key: FMP_MCP_ACCESS_TOKEN
         sync: false
+      - key: FMP_MCP_AUTH_MODE
+        value: mixed
+      - key: MCP_PUBLIC_BASE_URL
+        value: https://bcna-fmp-mcp.onrender.com
+      - key: OAUTH_ISSUER
+        sync: false
+      - key: OAUTH_AUDIENCE
+        value: https://bcna-fmp-mcp.onrender.com
+      - key: OAUTH_REQUIRED_SCOPES
+        value: fmp:read
+      - key: OAUTH_ALGORITHMS
+        value: RS256
