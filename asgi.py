@@ -1,8 +1,14 @@
 """ASGI entry point for the hosted BCNA FMP MCP server.
 
-Supports two bearer-token methods:
-1. Auth0 OAuth access tokens for ChatGPT.
-2. A private static token for the local Codex plugin.
+Supports three ways in:
+1. Auth0 OAuth access tokens for ChatGPT (bearer header).
+2. A private static token for the local Codex plugin (bearer header).
+3. A path token: when FMP_MCP_TOKEN is set, the MCP handler is mounted at
+   /mcp/<FMP_MCP_TOKEN> and a request to that exact path is accepted without
+   a bearer header. This matches the GuruFocus connector and lets scripted
+   callers (the Composio sandbox that refreshes the scorecard's FMP Estimates
+   tab) post JSON-RPC straight to the URL. The secret is the path itself, so
+   treat the full URL like a password.
 """
 
 from __future__ import annotations
@@ -111,6 +117,22 @@ def _validate_oauth_token(token: str) -> dict[str, Any]:
     return payload
 
 
+def _path_token_ok(raw_path: str) -> bool:
+    """True when the request targets /mcp/<FMP_MCP_TOKEN> (or a sub-path).
+
+    Compared in constant time. Does nothing when FMP_MCP_TOKEN is unset, so
+    a deploy without it keeps the bearer-only behaviour.
+    """
+    path_token = _setting("FMP_MCP_TOKEN")
+    if not path_token:
+        return False
+    parts = raw_path.split("/")
+    # "/mcp/<token>/..." -> ["", "mcp", "<token>", ...]
+    if len(parts) < 3 or parts[1] != "mcp":
+        return False
+    return hmac.compare_digest(parts[2].encode(), path_token.encode())
+
+
 class HostedAuthMiddleware(BaseHTTPMiddleware):
     """Expose discovery routes and protect MCP with OAuth or a static token."""
 
@@ -140,6 +162,9 @@ class HostedAuthMiddleware(BaseHTTPMiddleware):
                     ),
                 }
             )
+
+        if _path_token_ok(request.url.path):
+            return await call_next(request)
 
         supplied = request.headers.get("authorization", "")
         prefix = "Bearer "

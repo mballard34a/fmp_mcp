@@ -50,6 +50,14 @@ never written into the code and never sent back to the model. Hosted requests
 also require **`FMP_MCP_ACCESS_TOKEN`** as an HTTP bearer token. Keep both out of
 source control and store both as Render secrets.
 
+**Path token (optional).** When **`FMP_MCP_TOKEN`** is set, the MCP handler is
+mounted at `/mcp/<FMP_MCP_TOKEN>` and requests to that exact path are accepted
+without a bearer header, the same way the GuruFocus connector works. This is
+what lets the Composio sandbox call the server directly when it refreshes the
+scorecard's FMP Estimates tab. The full URL then works as a password: keep it
+in the claude.ai project instructions only, and rotate the value in Render if
+it leaks. Any other path still needs a bearer token.
+
 ---
 
 ## Option A — Local, with Claude Desktop (simplest, key never leaves your computer)
